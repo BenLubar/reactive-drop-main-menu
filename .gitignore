@@ -1,0 +1,14 @@
+# save repo space by not including placeholder text fonts
+fonts/
+
+# don't include backup files
+*.blend1
+
+# don't include renders
+mainmenu_*.png
+
+# don't include compiled files
+main_menu_sheet.sht
+main_menu_sheet.tga
+main_menu_sheet.vtf
+main_menu_sheet_enum.txt
