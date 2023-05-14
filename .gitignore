@@ -8,7 +8,7 @@ fonts/
 mainmenu_*.png
 
 # don't include compiled files
-main_menu_sheet.sht
-main_menu_sheet.tga
-main_menu_sheet.vtf
-main_menu_sheet_enum.txt
+*_sheet.sht
+*_sheet.tga
+*_sheet.vtf
+*_sheet_enum.txt
