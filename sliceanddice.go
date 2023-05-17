@@ -187,27 +187,37 @@ var sheets = [...]sheet{
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 840, 5040, 960),
-				[]frame{},
+				[]frame{
+					{3, "_quit_hover_4"},
+				},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 960, 5040, 1080),
-				[]frame{},
+				[]frame{
+					{3, "_quit_hover_5"},
+				},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1080, 5040, 1200),
-				[]frame{},
+				[]frame{
+					{3, "_quit_hover_6"},
+				},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1200, 5040, 1320),
-				[]frame{},
+				[]frame{
+					{3, "_quit_hover_7"},
+				},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1320, 5040, 1440),
-				[]frame{},
+				[]frame{
+					{3, "_quit_hover_8"},
+				},
 			},
 			{
 				"hoiaf_top_10",
