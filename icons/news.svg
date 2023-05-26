@@ -1,0 +1,22 @@
+<svg version="1.1" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient id="c" x1="6" x2="250" y1="128" y2="128" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#404040" offset="0"/>
+			<stop stop-color="#c0c0c0" offset="1"/>
+		</linearGradient>
+		<linearGradient id="b" x1="24" x2="232" y1="112" y2="112" gradientUnits="userSpaceOnUse">
+			<stop stop-opacity=".75" offset="0"/>
+			<stop stop-color="#303030" stop-opacity=".75" offset="1"/>
+		</linearGradient>
+		<linearGradient id="a" x1="22" x2="234" y1="152" y2="152" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#606060" offset="0"/>
+			<stop stop-color="#c0c0c0" offset="1"/>
+		</linearGradient>
+	</defs>
+	<path d="m24 56h208v104h-56v-80h-152z" fill="url(#b)" stroke-width="1px"/>
+	<g stroke="#000" stroke-linejoin="round">
+		<path d="m8 216v-176h240v176z" fill="none" stroke-width="8"/>
+		<path d="m232 56v24h-208v-24zm0 104v-72h-56v72zm-224 56v-176h240v176z" fill="url(#c)" fill-rule="evenodd" stroke-width="4"/>
+		<path d="m24 88h144v80h64v32h-208z" fill="url(#a)" stroke-width="4"/>
+	</g>
+</svg>

@@ -1,0 +1,29 @@
+<svg version="1.1" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient id="a">
+			<stop stop-color="#00c0c0" offset="0"/>
+			<stop stop-color="#004040" offset="1"/>
+		</linearGradient>
+		<linearGradient id="b">
+			<stop stop-color="#808080" offset="0"/>
+			<stop stop-color="#c0c0c0" offset="1"/>
+		</linearGradient>
+		<linearGradient id="e" x1="8" x2="248" y1="60" y2="60" gradientUnits="userSpaceOnUse" xlink:href="#a"/>
+		<linearGradient id="d" x1="108" x2="148" y1="128" y2="128" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#606060" offset="0"/>
+			<stop stop-color="#c0c0c0" offset="1"/>
+		</linearGradient>
+		<linearGradient id="c" x1="196" x2="236" y1="40" y2="40" gradientUnits="userSpaceOnUse" xlink:href="#b"/>
+	</defs>
+	<path d="m112 216v-176h32v176z" fill="url(#d)" stroke="#000" stroke-linejoin="round" stroke-width="8"/>
+	<g fill="url(#e)" stroke="#000" stroke-linejoin="round" stroke-width="8">
+		<path transform="matrix(-1,0,0,1,256,0)" d="m8 8v64h240v-64z"/>
+		<path transform="matrix(-1,0,0,1,256,88)" d="m8 8v64h240v-64z"/>
+		<path transform="matrix(-1,0,0,1,256,176)" d="m8 8v64h240v-64z"/>
+	</g>
+	<g fill="url(#c)" fill-rule="evenodd" stroke="#000" stroke-linejoin="round">
+		<path transform="matrix(.996 0 0 .996 1.01 .174)" d="m23.1 19.9v8.03h24.1v-8.03h-24.1zm32.1 0v8.03h24.1v-8.03h-24.1zm161 4.02a16.1 16.1 0 0 0-16.1 16.1 16.1 16.1 0 0 0 16.1 16.1 16.1 16.1 0 0 0 16.1-16.1 16.1 16.1 0 0 0-16.1-16.1zm-193 12.1v8.03h24.1v-8.03h-24.1zm32.1 0v8.03h24.1v-8.03h-24.1zm-32.1 16.1v8.03h24.1v-8.03h-24.1zm32.1 0v8.03h24.1v-8.03h-24.1z" stroke-width="4.02"/>
+		<path transform="matrix(.996 0 0 .996 1.01 88.2)" d="m23.1 19.9v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03zm161 4.02a16.1 16.1 0 0 0-16.1 16.1 16.1 16.1 0 0 0 16.1 16.1 16.1 16.1 0 0 0 16.1-16.1 16.1 16.1 0 0 0-16.1-16.1zm-193 12.1v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03zm-32.1 16.1v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03z" stroke-width="4.02"/>
+		<path transform="matrix(.996 0 0 .996 1.01 176)" d="m23.1 19.9v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03zm161 4.02a16.1 16.1 0 0 0-16.1 16.1 16.1 16.1 0 0 0 16.1 16.1 16.1 16.1 0 0 0 16.1-16.1 16.1 16.1 0 0 0-16.1-16.1zm-193 12.1v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03zm-32.1 16.1v8.03h24.1v-8.03zm32.1 0v8.03h24.1v-8.03z" stroke-width="4.02"/>
+	</g>
+</svg>

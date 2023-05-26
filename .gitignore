@@ -6,6 +6,7 @@ fonts/
 
 # don't include renders
 mainmenu_*.png
+icons/*.png
 
 # don't include compiled files
 *_sheet.sht
