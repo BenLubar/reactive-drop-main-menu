@@ -108,6 +108,7 @@ var sheets = [...]sheet{
 				image.Rect(80, 1000, 1240, 1240),
 				[]frame{
 					{0, ""},
+					{1, "_logo_hover"},
 					{4, "_profile_hover"},
 					{5, "_hover"},
 					{19, "_singleplayer_hover"},
@@ -372,9 +373,9 @@ func main() {
 					name := a.name + f.suffix
 					fmt.Printf("cropping %q\n", name)
 
-					dst := src.SubImage(a.rect).(*image.NRGBA)
-					// pretend it's not a subrect
-					dst.Rect = dst.Rect.Sub(dst.Rect.Min)
+					sub := src.SubImage(a.rect)
+					dst := image.NewNRGBA(sub.Bounds().Sub(sub.Bounds().Min))
+					draw.Draw(dst, dst.Rect, sub, sub.Bounds().Min, draw.Src)
 
 					sheetSequences[j] = append(sheetSequences[j], sequence{name, dst})
 				}
@@ -434,7 +435,7 @@ func main() {
 					sequenceOrder[i] = i
 				}
 				sort.SliceStable(sequenceOrder, sortMethod)
-				tex, sheetData, width, height := packSheet(sequences, sequenceOrder, tryWidth)
+				tex, sheetData, width, height := packSheet(sequences, sequenceOrder, tryWidth, false)
 				if tex == nil {
 					continue
 				}
@@ -449,7 +450,7 @@ func main() {
 				message := "discarding"
 
 				if texSize < bestTexSize || (texSize == bestTexSize && size < bestSize) || (texSize == bestTexSize && size == bestSize && squareness < bestSquareness) {
-					bestTexture = tex
+					bestTexture, _, _, _ = packSheet(sequences, sequenceOrder, tryWidth, true)
 					bestSheetData = sheetData
 					bestSize = size
 					bestTexSize = texSize
@@ -518,9 +519,11 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
+		fmt.Print("\n\n")
 	}
 
-	fmt.Println("\ndone!")
+	fmt.Println("done!")
 }
 
 func readFrame(i int) (*image.NRGBA, error) {
@@ -541,7 +544,7 @@ func readFrame(i int) (*image.NRGBA, error) {
 	return img.(*image.NRGBA), nil
 }
 
-func packSheet(sequences []sequence, sequenceOrder []int, width int) (*image.NRGBA, []byte, int, int) {
+func packSheet(sequences []sequence, sequenceOrder []int, width int, copyPixels bool) (*image.NRGBA, []byte, int, int) {
 	const padding = 8
 	offsets := make([]image.Point, len(sequences))
 	row, col, nextRow, maxCol := 0, 0, 0, 0
@@ -588,21 +591,23 @@ func packSheet(sequences []sequence, sequenceOrder []int, width int) (*image.NRG
 	dst := image.NewNRGBA(image.Rect(0, 0, w, h))
 	for i, seq := range sequences {
 		rect := seq.img.Rect.Add(offsets[i])
-		for offset := padding / 2; offset > 0; offset-- {
-			draw.Draw(dst, rect.Add(image.Pt(offset, offset)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(-offset, -offset)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(offset, -offset)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(-offset, offset)), seq.img, image.Point{}, draw.Src)
-		}
+		if copyPixels {
+			for offset := padding / 2; offset > 0; offset-- {
+				draw.Draw(dst, rect.Add(image.Pt(offset, offset)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(-offset, -offset)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(offset, -offset)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(-offset, offset)), seq.img, image.Point{}, draw.Src)
+			}
 
-		for offset := padding / 2; offset > 0; offset-- {
-			draw.Draw(dst, rect.Add(image.Pt(-offset, 0)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(offset, 0)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(0, -offset)), seq.img, image.Point{}, draw.Src)
-			draw.Draw(dst, rect.Add(image.Pt(0, offset)), seq.img, image.Point{}, draw.Src)
-		}
+			for offset := padding / 2; offset > 0; offset-- {
+				draw.Draw(dst, rect.Add(image.Pt(-offset, 0)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(offset, 0)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(0, -offset)), seq.img, image.Point{}, draw.Src)
+				draw.Draw(dst, rect.Add(image.Pt(0, offset)), seq.img, image.Point{}, draw.Src)
+			}
 
-		draw.Draw(dst, rect, seq.img, image.Point{}, draw.Src)
+			draw.Draw(dst, rect, seq.img, image.Point{}, draw.Src)
+		}
 
 		sheetData = appendInt(sheetData, uint32(i))
 		sheetData = appendInt(sheetData, 1)   // does not loop
