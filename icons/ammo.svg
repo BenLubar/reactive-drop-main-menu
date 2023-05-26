@@ -1,0 +1,16 @@
+<svg version="1.1" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<linearGradient id="a" x1="-12" x2="220" y1="128" y2="128" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#604020" offset="0"/>
+			<stop stop-color="#ffc060" offset="1"/>
+		</linearGradient>
+	</defs>
+	<g stroke="#000" stroke-linejoin="round">
+		<path transform="translate(24)" d="m24 16c-3.77 0-6.09 4.75-8 8-9.85 16.7-16 56-16 56l-8 8v144s21 8 32 8c11 0 32-8 32-8v-144l-8-8s-6.15-39.3-16-56c-1.91-3.25-4.23-8-8-8zm80 0c-3.77 0-6.09 4.75-8 8-9.85 16.7-16 56-16 56l-8 8v144s21 8.13 32 8.13c11 0 32-8.13 32-8.13v-144l-8-8s-6.15-39.3-16-56c-1.91-3.25-4.23-8-8-8zm80 0c-3.77 0-6.09 4.75-8 8-9.85 16.7-16 56-16 56l-8 8v144s21 8 32 8 32-8 32-8v-144l-8-8s-6.15-39.3-16-56c-1.91-3.25-4.23-8-8-8z" fill="url(#a)" stroke-width="8"/>
+		<g fill-opacity=".25" stroke-width="4">
+			<path transform="translate(0,8)" d="m16 88s21 4 32 4c11 0 32-4 32-4v-8l-8-8s-16 4-24 4c-8.03 0-24-4-24-4l-8 8z"/>
+			<path transform="translate(80,8)" d="m16 88s21 4 32 4c11 0 32-4 32-4v-8l-8-8s-16 4-24 4c-8.03 0-24-4-24-4l-8 8z"/>
+			<path transform="translate(160,8)" d="m16 88s21 4 32 4c11 0 32-4 32-4v-8l-8-8s-16 4-24 4c-8.03 0-24-4-24-4l-8 8z"/>
+		</g>
+	</g>
+</svg>
