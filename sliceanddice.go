@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 	"math"
@@ -31,9 +32,35 @@ type frame struct {
 	suffix string
 }
 
+type additiveSheet struct {
+	name  string
+	enum  string
+	areas []additiveArea
+}
+
+type additiveArea struct {
+	name   string
+	rect   image.Rectangle
+	frames []additiveFrame
+}
+
+type additiveFrame struct {
+	base   int
+	index  int
+	suffix string
+}
+
 type sequence struct {
 	name string
 	img  *image.NRGBA
+	img2 *image.NRGBA
+}
+
+type queuedFrame struct {
+	name  string
+	index int
+	rect  image.Rectangle
+	img   **image.NRGBA
 }
 
 var sheets = [...]sheet{
@@ -46,9 +73,6 @@ var sheets = [...]sheet{
 				image.Rect(0, 0, 192, 192),
 				[]frame{
 					{0, ""},
-					{1, "_logo_hover"},
-					{2, "_hover"},
-					{4, "_profile_hover"},
 				},
 			},
 			{
@@ -56,7 +80,6 @@ var sheets = [...]sheet{
 				image.Rect(4928, 0, 5120, 192),
 				[]frame{
 					{0, ""},
-					{3, "_hover"},
 				},
 			},
 			{
@@ -64,39 +87,29 @@ var sheets = [...]sheet{
 				image.Rect(384, 0, 896, 256),
 				[]frame{
 					{0, ""},
-					{1, "_hover"},
-					{2, "_settings_hover"},
-					{4, "_profile_hover"},
 				},
 			},
 			{
 				"top_button",
 				image.Rect(1216, 0, 1728, 208),
-				[]frame{
-					{4, "_profile_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"top_button",
 				image.Rect(1760, 0, 2272, 208),
-				[]frame{
-					{20, "_right_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"top_button",
 				image.Rect(2304, 0, 2816, 208),
 				[]frame{
 					{0, ""},
-					{20, "_hover"},
 				},
 			},
 			{
 				"top_button",
 				image.Rect(2848, 0, 3360, 208),
-				[]frame{
-					{20, "_left_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"top_button",
@@ -108,10 +121,6 @@ var sheets = [...]sheet{
 				image.Rect(80, 1000, 1240, 1240),
 				[]frame{
 					{0, ""},
-					{1, "_logo_hover"},
-					{4, "_profile_hover"},
-					{5, "_hover"},
-					{19, "_singleplayer_hover"},
 				},
 			},
 			{
@@ -119,9 +128,6 @@ var sheets = [...]sheet{
 				image.Rect(80, 1280, 1120, 1480),
 				[]frame{
 					{0, ""},
-					{5, "_create_lobby_hover"},
-					{18, "_quick_join_hover"},
-					{19, "_hover"},
 				},
 			},
 			{
@@ -129,25 +135,18 @@ var sheets = [...]sheet{
 				image.Rect(80, 1520, 1120, 2240),
 				[]frame{
 					{0, ""},
-					{9, "_below_hover"},
-					{19, "_singleplayer_hover"},
 				},
 			},
 			{
 				"quick_join",
 				image.Rect(80, 2280, 1120, 3000),
-				[]frame{
-					{9, "_hover"},
-					{18, "_above_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"workshop",
 				image.Rect(80, 3040, 1120, 3632),
 				[]frame{
 					{0, ""},
-					{9, "_quick_join_hover"},
-					{21, "_hover"},
 				},
 			},
 			{
@@ -155,9 +154,6 @@ var sheets = [...]sheet{
 				image.Rect(3440, 320, 5040, 480),
 				[]frame{
 					{0, ""},
-					{3, "_quit_hover"},
-					{11, "_hover"},
-					{12, "_below_hover"},
 				},
 			},
 			{
@@ -165,100 +161,70 @@ var sheets = [...]sheet{
 				image.Rect(3520, 480, 5040, 600),
 				[]frame{
 					{0, ""},
-					{3, "_quit_hover_1"},
-					{13, "_below_hover"},
 				},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 600, 5040, 720),
-				[]frame{
-					{3, "_quit_hover_2"},
-					{13, "_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 720, 5040, 840),
-				[]frame{
-					{3, "_quit_hover_3"},
-					{13, "_above_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 840, 5040, 960),
-				[]frame{
-					{3, "_quit_hover_4"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 960, 5040, 1080),
-				[]frame{
-					{3, "_quit_hover_5"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1080, 5040, 1200),
-				[]frame{
-					{3, "_quit_hover_6"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1200, 5040, 1320),
-				[]frame{
-					{3, "_quit_hover_7"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1320, 5040, 1440),
-				[]frame{
-					{3, "_quit_hover_8"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_top_10",
 				image.Rect(3520, 1440, 5040, 1560),
-				[]frame{
-					{10, "_hoiaf_timer_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"hoiaf_timer",
 				image.Rect(3440, 1600, 5040, 1760),
 				[]frame{
 					{0, ""},
-					{8, "_event_timer_hover"},
-					{10, "_hover"},
-					{15, "_hoiaf_top_10_hover"},
 				},
 			},
 			{
 				"event_timer",
 				image.Rect(3440, 1832, 5040, 2032),
-				[]frame{
-					{10, "_hoiaf_timer_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"event_timer",
 				image.Rect(3440, 2032, 5040, 2232),
-				[]frame{
-					{6, "_below_hover"},
-				},
+				[]frame{},
 			},
 			{
 				"event_timer",
 				image.Rect(3440, 2232, 5040, 2432),
 				[]frame{
 					{0, ""},
-					{6, "_hover"},
-					{7, "_above_hover"},
-					{17, "_news_hover"},
 				},
 			},
 			{
@@ -266,9 +232,6 @@ var sheets = [...]sheet{
 				image.Rect(3440, 2472, 5040, 3392),
 				[]frame{
 					{0, ""},
-					{6, "_event_timer_hover"},
-					{16, "_update_hover"},
-					{17, "_hover"},
 				},
 			},
 			{
@@ -276,8 +239,6 @@ var sheets = [...]sheet{
 				image.Rect(3440, 3432, 5040, 3632),
 				[]frame{
 					{0, ""},
-					{16, "_hover"},
-					{17, "_news_hover"},
 				},
 			},
 			{
@@ -285,7 +246,6 @@ var sheets = [...]sheet{
 				image.Rect(0, 3680, 1200, 3840),
 				[]frame{
 					{0, ""},
-					{21, "_workshop_hover"},
 				},
 			},
 			{
@@ -293,7 +253,6 @@ var sheets = [...]sheet{
 				image.Rect(3320, 3680, 5120, 3840),
 				[]frame{
 					{0, ""},
-					{16, "_update_hover"},
 				},
 			},
 			{
@@ -308,7 +267,6 @@ var sheets = [...]sheet{
 				image.Rect(2048, 0, 3072, 192),
 				[]frame{
 					{22, ""},
-					{25, "_button_glow"},
 				},
 			},
 			{
@@ -316,9 +274,6 @@ var sheets = [...]sheet{
 				image.Rect(0, 0, 1920, 192),
 				[]frame{
 					{22, ""},
-					{23, "_settings_glow"},
-					{24, "_logo_glow"},
-					{25, "_profile_glow"},
 				},
 			},
 			{
@@ -326,8 +281,6 @@ var sheets = [...]sheet{
 				image.Rect(3200, 0, 5120, 192),
 				[]frame{
 					{22, ""},
-					{23, "_quit_glow"},
-					{25, "_hoiaf_glow"},
 				},
 			},
 		},
@@ -351,8 +304,331 @@ var sheets = [...]sheet{
 	},
 }
 
+var additiveSheets = []additiveSheet{
+	{
+		"main_menu_additive_sheet",
+		"MainMenuAdditive",
+		[]additiveArea{
+			{
+				"settings",
+				image.Rect(0, 0, 192, 192),
+				[]additiveFrame{
+					{0, 1, "_logo_hover"},
+					{0, 2, "_hover"},
+					{0, 4, "_profile_hover"},
+				},
+			},
+			{
+				"quit",
+				image.Rect(4928, 0, 5120, 192),
+				[]additiveFrame{
+					{0, 3, "_hover"},
+				},
+			},
+			{
+				"logo",
+				image.Rect(384, 0, 896, 256),
+				[]additiveFrame{
+					{0, 1, "_hover"},
+					{0, 2, "_settings_hover"},
+					{0, 4, "_profile_hover"},
+				},
+			},
+			{
+				"top_button",
+				image.Rect(1216, 0, 1728, 208),
+				[]additiveFrame{
+					{0, 4, "_profile_hover"},
+				},
+			},
+			{
+				"top_button",
+				image.Rect(1760, 0, 2272, 208),
+				[]additiveFrame{
+					{0, 20, "_right_hover"},
+				},
+			},
+			{
+				"top_button",
+				image.Rect(2304, 0, 2816, 208),
+				[]additiveFrame{
+					{0, 20, "_hover"},
+				},
+			},
+			{
+				"top_button",
+				image.Rect(2848, 0, 3360, 208),
+				[]additiveFrame{
+					{0, 20, "_left_hover"},
+				},
+			},
+			{
+				"top_button",
+				image.Rect(3392, 0, 3904, 208),
+				[]additiveFrame{},
+			},
+			{
+				"create_lobby",
+				image.Rect(80, 1000, 1240, 1240),
+				[]additiveFrame{
+					{0, 1, "_logo_hover"},
+					{0, 4, "_profile_hover"},
+					{0, 5, "_hover"},
+					{0, 19, "_singleplayer_hover"},
+				},
+			},
+			{
+				"singleplayer",
+				image.Rect(80, 1280, 1120, 1480),
+				[]additiveFrame{
+					{0, 5, "_create_lobby_hover"},
+					{0, 18, "_quick_join_hover"},
+					{0, 19, "_hover"},
+				},
+			},
+			{
+				"quick_join",
+				image.Rect(80, 1520, 1120, 2240),
+				[]additiveFrame{
+					{0, 9, "_below_hover"},
+					{0, 19, "_singleplayer_hover"},
+				},
+			},
+			{
+				"quick_join",
+				image.Rect(80, 2280, 1120, 3000),
+				[]additiveFrame{
+					{0, 9, "_hover"},
+					{0, 18, "_above_hover"},
+				},
+			},
+			{
+				"workshop",
+				image.Rect(80, 3040, 1120, 3632),
+				[]additiveFrame{
+					{0, 9, "_quick_join_hover"},
+					{0, 21, "_hover"},
+				},
+			},
+			{
+				"hoiaf_top_1",
+				image.Rect(3440, 320, 5040, 480),
+				[]additiveFrame{
+					{0, 3, "_quit_hover"},
+					{0, 11, "_hover"},
+					{0, 12, "_below_hover"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 480, 5040, 600),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_1"},
+					{0, 13, "_below_hover"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 600, 5040, 720),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_2"},
+					{0, 13, "_hover"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 720, 5040, 840),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_3"},
+					{0, 13, "_above_hover"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 840, 5040, 960),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_4"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 960, 5040, 1080),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_5"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 1080, 5040, 1200),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_6"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 1200, 5040, 1320),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_7"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 1320, 5040, 1440),
+				[]additiveFrame{
+					{0, 3, "_quit_hover_8"},
+				},
+			},
+			{
+				"hoiaf_top_10",
+				image.Rect(3520, 1440, 5040, 1560),
+				[]additiveFrame{
+					{0, 10, "_hoiaf_timer_hover"},
+				},
+			},
+			{
+				"hoiaf_timer",
+				image.Rect(3440, 1600, 5040, 1760),
+				[]additiveFrame{
+					{0, 8, "_event_timer_hover"},
+					{0, 10, "_hover"},
+					{0, 15, "_hoiaf_top_10_hover"},
+				},
+			},
+			{
+				"event_timer",
+				image.Rect(3440, 1832, 5040, 2032),
+				[]additiveFrame{
+					{0, 10, "_hoiaf_timer_hover"},
+				},
+			},
+			{
+				"event_timer",
+				image.Rect(3440, 2032, 5040, 2232),
+				[]additiveFrame{
+					{0, 6, "_below_hover"},
+				},
+			},
+			{
+				"event_timer",
+				image.Rect(3440, 2232, 5040, 2432),
+				[]additiveFrame{
+					{0, 6, "_hover"},
+					{0, 7, "_above_hover"},
+					{0, 17, "_news_hover"},
+				},
+			},
+			{
+				"news",
+				image.Rect(3440, 2472, 5040, 3392),
+				[]additiveFrame{
+					{0, 6, "_event_timer_hover"},
+					{0, 16, "_update_hover"},
+					{0, 17, "_hover"},
+				},
+			},
+			{
+				"update",
+				image.Rect(3440, 3432, 5040, 3632),
+				[]additiveFrame{
+					{0, 16, "_hover"},
+					{0, 17, "_news_hover"},
+				},
+			},
+			{
+				"ticker_left",
+				image.Rect(0, 3680, 1200, 3840),
+				[]additiveFrame{
+					{0, 21, "_workshop_hover"},
+				},
+			},
+			{
+				"ticker_right",
+				image.Rect(3320, 3680, 5120, 3840),
+				[]additiveFrame{
+					{0, 16, "_update_hover"},
+				},
+			},
+			{
+				"ticker_mid",
+				image.Rect(2480, 3680, 2640, 3840),
+				[]additiveFrame{},
+			},
+			{
+				"top_bar",
+				image.Rect(2048, 0, 3072, 192),
+				[]additiveFrame{
+					{22, 25, "_button_glow"},
+				},
+			},
+			{
+				"top_bar_left",
+				image.Rect(0, 0, 1920, 192),
+				[]additiveFrame{
+					{22, 23, "_settings_glow"},
+					{22, 24, "_logo_glow"},
+					{22, 25, "_profile_glow"},
+				},
+			},
+			{
+				"top_bar_right",
+				image.Rect(3200, 0, 5120, 192),
+				[]additiveFrame{
+					{22, 23, "_quit_glow"},
+					{22, 25, "_hoiaf_glow"},
+				},
+			},
+		},
+	},
+}
+
 func main() {
-	sheetSequences := make([][]sequence, len(sheets))
+	requested := make([][]queuedFrame, len(sheets)+len(additiveSheets))
+
+	for i, s := range sheets {
+		for _, a := range s.areas {
+			for _, f := range a.frames {
+				requested[i] = append(requested[i], queuedFrame{
+					name:  a.name + f.suffix,
+					rect:  a.rect,
+					index: f.index,
+				})
+			}
+		}
+	}
+	for i, s := range additiveSheets {
+		for _, a := range s.areas {
+			for _, f := range a.frames {
+				requested[len(sheets)+i] = append(requested[len(sheets)+i], queuedFrame{
+					name:  a.name + f.suffix,
+					rect:  a.rect,
+					index: f.base,
+				}, queuedFrame{
+					name:  a.name + f.suffix,
+					rect:  a.rect,
+					index: f.index,
+				})
+			}
+		}
+	}
+
+	sheetSequences := make([][]sequence, len(sheets)+len(additiveSheets))
+	for i, r := range requested {
+		if i >= len(sheets) {
+			sheetSequences[i] = make([]sequence, len(r)/2)
+			for j := 0; j < len(r); j += 2 {
+				sheetSequences[i][j/2].name = r[j].name
+				r[j].img = &sheetSequences[i][j/2].img2
+				r[j+1].img = &sheetSequences[i][j/2].img
+			}
+		} else {
+			sheetSequences[i] = make([]sequence, len(r))
+			for j := range r {
+				sheetSequences[i][j].name = r[j].name
+				r[j].img = &sheetSequences[i][j].img
+			}
+		}
+	}
+
 	for i := 0; ; i++ {
 		src, err := readFrame(i)
 		if err != nil {
@@ -363,23 +639,46 @@ func main() {
 			panic(err)
 		}
 
-		for j, s := range sheets {
-			for _, a := range s.areas {
-				for _, f := range a.frames {
-					if f.index != i {
-						continue
+		for _, r := range requested {
+			for _, q := range r {
+				if q.index != i {
+					continue
+				}
+
+				fmt.Printf("cropping %q\n", q.name)
+
+				sub := src.SubImage(q.rect)
+				rect := sub.Bounds().Sub(sub.Bounds().Min)
+				*q.img = image.NewNRGBA(rect)
+				draw.Draw(*q.img, rect, sub, sub.Bounds().Min, draw.Src)
+			}
+		}
+	}
+
+	for i := len(sheets); i < len(sheetSequences); i++ {
+		for _, s := range sheetSequences[i] {
+			for y := s.img.Rect.Min.Y; y < s.img.Rect.Max.Y; y++ {
+				for x := s.img.Rect.Min.X; x < s.img.Rect.Max.X; x++ {
+					c0, c1 := s.img.NRGBAAt(x, y), s.img2.NRGBAAt(x, y)
+
+					r := (int(c0.R)*int(c0.A) - int(c1.R)*int(c1.A)) / 255
+					if r < 0 {
+						r = 0
+					}
+					g := (int(c0.G)*int(c0.A) - int(c1.G)*int(c1.A)) / 255
+					if g < 0 {
+						g = 0
+					}
+					b := (int(c0.B)*int(c0.A) - int(c1.B)*int(c1.A)) / 255
+					if b < 0 {
+						b = 0
 					}
 
-					name := a.name + f.suffix
-					fmt.Printf("cropping %q\n", name)
-
-					sub := src.SubImage(a.rect)
-					dst := image.NewNRGBA(sub.Bounds().Sub(sub.Bounds().Min))
-					draw.Draw(dst, dst.Rect, sub, sub.Bounds().Min, draw.Src)
-
-					sheetSequences[j] = append(sheetSequences[j], sequence{name, dst})
+					s.img.SetNRGBA(x, y, color.NRGBA{uint8(r), uint8(g), uint8(b), c1.A})
 				}
 			}
+
+			s.img2 = nil
 		}
 	}
 
@@ -435,7 +734,7 @@ func main() {
 					sequenceOrder[i] = i
 				}
 				sort.SliceStable(sequenceOrder, sortMethod)
-				tex, sheetData, width, height := packSheet(sequences, sequenceOrder, tryWidth, false)
+				tex, sheetData, width, height := packSheet(sequences, sequenceOrder, tryWidth, false, true)
 				if tex == nil {
 					continue
 				}
@@ -450,7 +749,7 @@ func main() {
 				message := "discarding"
 
 				if texSize < bestTexSize || (texSize == bestTexSize && size < bestSize) || (texSize == bestTexSize && size == bestSize && squareness < bestSquareness) {
-					bestTexture, _, _, _ = packSheet(sequences, sequenceOrder, tryWidth, true)
+					bestTexture, _, _, _ = packSheet(sequences, sequenceOrder, tryWidth, true, true)
 					bestSheetData = sheetData
 					bestSize = size
 					bestTexSize = texSize
@@ -473,7 +772,14 @@ func main() {
 
 		fmt.Println("writing files...")
 
-		out, err := os.Create(sheets[sheetIndex].name + ".tga")
+		name, enumName := "", ""
+		if sheetIndex < len(sheets) {
+			name, enumName = sheets[sheetIndex].name, sheets[sheetIndex].enum
+		} else {
+			name, enumName = additiveSheets[sheetIndex-len(sheets)].name, additiveSheets[sheetIndex-len(sheets)].enum
+		}
+
+		out, err := os.Create(name + ".tga")
 		if err != nil {
 			panic(err)
 		}
@@ -488,21 +794,21 @@ func main() {
 			panic(err)
 		}
 
-		err = os.WriteFile(sheets[sheetIndex].name+".sht", bestSheetData, 0644)
+		err = os.WriteFile(name+".sht", bestSheetData, 0644)
 		if err != nil {
 			panic(err)
 		}
 
-		enum, err := os.Create(sheets[sheetIndex].name + "_enum.txt")
+		enum, err := os.Create(name + "_enum.txt")
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Fprintf(enum, "\tDECLARE_HUD_SHEET( %s )\n", sheets[sheetIndex].enum)
+		fmt.Fprintf(enum, "\tDECLARE_HUD_SHEET( %s )\n", enumName)
 		for _, s := range sequences {
 			fmt.Fprintf(enum, "\t\tDECLARE_HUD_SHEET_UV( %s ),\n", s.name)
 		}
-		fmt.Fprintf(enum, "\tEND_HUD_SHEET( %s );\n", sheets[sheetIndex].enum)
+		fmt.Fprintf(enum, "\tEND_HUD_SHEET( %s );\n", enumName)
 
 		err = enum.Close()
 		if err != nil {
@@ -512,7 +818,7 @@ func main() {
 		fmt.Println("compiling vtf...")
 
 		// sorry about the hard-coded path; I'm lazy
-		cmd := exec.Command(`D:\Program Files\Steam\steamapps\common\Alien Swarm Reactive Drop\bin\vtex.exe`, `-nopause`, `-nop4`, `-game`, `D:\Program Files\Steam\steamapps\common\Alien Swarm Reactive Drop\reactivedrop`, `-outdir`, `.`, sheets[sheetIndex].name)
+		cmd := exec.Command(`D:\Program Files\Steam\steamapps\common\Alien Swarm Reactive Drop\bin\vtex.exe`, `-nopause`, `-nop4`, `-game`, `D:\Program Files\Steam\steamapps\common\Alien Swarm Reactive Drop\reactivedrop`, `-outdir`, `.`, name)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err = cmd.Run()
@@ -544,7 +850,7 @@ func readFrame(i int) (*image.NRGBA, error) {
 	return img.(*image.NRGBA), nil
 }
 
-func packSheet(sequences []sequence, sequenceOrder []int, width int, copyPixels bool) (*image.NRGBA, []byte, int, int) {
+func packSheet(sequences []sequence, sequenceOrder []int, width int, copyPixels, transparent bool) (*image.NRGBA, []byte, int, int) {
 	const padding = 8
 	offsets := make([]image.Point, len(sequences))
 	row, col, nextRow, maxCol := 0, 0, 0, 0
@@ -621,6 +927,18 @@ func packSheet(sequences []sequence, sequenceOrder []int, width int, copyPixels 
 			sheetData = appendFloat(sheetData, (float32(rect.Min.Y)+0.5)/float32(h))
 			sheetData = appendFloat(sheetData, (float32(rect.Max.X)-0.5)/float32(w))
 			sheetData = appendFloat(sheetData, (float32(rect.Max.Y)-0.5)/float32(h))
+		}
+	}
+
+	if copyPixels && !transparent {
+		for y := 0; y < h; y++ {
+			for x := 0; x < w; x++ {
+				c := dst.NRGBAAt(x, y)
+				if c.A < 255 {
+					r, g, b, _ := c.RGBA()
+					dst.SetNRGBA(x, y, color.NRGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), 255})
+				}
+			}
 		}
 	}
 
