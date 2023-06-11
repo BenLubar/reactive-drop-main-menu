@@ -3,4 +3,4 @@ nomip 1
 nonice 1
 clamps 1
 clampt 1
-reduce 2
+reduce 4

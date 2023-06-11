@@ -117,6 +117,13 @@ var sheets = [...]sheet{
 				[]frame{},
 			},
 			{
+				"profile",
+				image.Rect(80, 320, 1240, 896),
+				[]frame{
+					{0, ""},
+				},
+			},
+			{
 				"create_lobby",
 				image.Rect(80, 1000, 1240, 1240),
 				[]frame{
@@ -285,23 +292,6 @@ var sheets = [...]sheet{
 			},
 		},
 	},
-	{
-		"commander_profile_sheet",
-		"CommanderProfileSheet",
-		[]area{
-			{
-				"profile",
-				image.Rect(80, 320, 1240, 896),
-				[]frame{
-					{0, ""},
-					{1, "_logo_hover"},
-					{2, "_settings_hover"},
-					{4, "_hover"},
-					{5, "_create_lobby_hover"},
-				},
-			},
-		},
-	},
 }
 
 var additiveSheets = []additiveSheet{
@@ -366,6 +356,16 @@ var additiveSheets = []additiveSheet{
 				"top_button",
 				image.Rect(3392, 0, 3904, 208),
 				[]additiveFrame{},
+			},
+			{
+				"profile",
+				image.Rect(80, 320, 1240, 896),
+				[]additiveFrame{
+					{0, 1, "_logo_hover"},
+					{0, 2, "_settings_hover"},
+					{0, 4, "_hover"},
+					{0, 5, "_create_lobby_hover"},
+				},
 			},
 			{
 				"create_lobby",
