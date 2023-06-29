@@ -1,0 +1,68 @@
+sequence 0
+frame checkbox.tga 1
+
+sequence 1
+frame checkbox_checked.tga 1
+
+sequence 2
+frame checkbox_checked_hover.tga 1
+
+sequence 3
+frame checkbox_focus.tga 1
+
+sequence 4
+frame checkbox_hover.tga 1
+
+sequence 5
+frame checkbox_ind.tga 1
+
+sequence 6
+frame checkbox_ind_hover.tga 1
+
+sequence 7
+frame radio.tga 1
+
+sequence 8
+frame radio_checked.tga 1
+
+sequence 9
+frame radio_checked_hover.tga 1
+
+sequence 10
+frame radio_focus.tga 1
+
+sequence 11
+frame radio_hover.tga 1
+
+sequence 12
+frame radio_ind.tga 1
+
+sequence 13
+frame radio_ind_hover.tga 1
+
+sequence 14
+frame color_swatch.tga 1
+
+sequence 15
+frame color_swatch_border.tga 1
+
+sequence 16
+frame color_swatch_border_focus.tga 1
+
+sequence 17
+frame color_swatch_border_hover.tga 1
+
+sequence 18
+frame slider_bar.tga 1
+
+sequence 19
+frame slider_bar_end.tga 1
+
+sequence 20
+frame slider_handle.tga 1
+
+sequence 21
+frame slider_handle_focus.tga 1
+
+sequence 22
+frame slider_handle_hover.tga 1
