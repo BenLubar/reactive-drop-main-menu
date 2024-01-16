@@ -76,6 +76,14 @@ var sheets = [...]sheet{
 				},
 			},
 			{
+				"notifications",
+				image.Rect(4640, 0, 4832, 192),
+				[]frame{
+					{0, ""},
+					{21, "_dull"},
+				},
+			},
+			{
 				"quit",
 				image.Rect(4928, 0, 5120, 192),
 				[]frame{
@@ -309,9 +317,18 @@ var additiveSheets = []additiveSheet{
 				},
 			},
 			{
+				"notifications",
+				image.Rect(4640, 0, 4832, 192),
+				[]additiveFrame{
+					{0, 2, "_hover"},
+					{0, 3, "_quit_hover"},
+				},
+			},
+			{
 				"quit",
 				image.Rect(4928, 0, 5120, 192),
 				[]additiveFrame{
+					{0, 2, "_notifications_hover"},
 					{0, 3, "_hover"},
 				},
 			},
@@ -573,12 +590,24 @@ var additiveSheets = []additiveSheet{
 				"top_bar_right",
 				image.Rect(3200, 0, 5120, 192),
 				[]additiveFrame{
-					{22, 23, "_quit_glow"},
+					{22, 23, "_notifications_glow"},
+					{22, 24, "_quit_glow"},
 					{22, 25, "_hoiaf_glow"},
 				},
 			},
 		},
 	},
+}
+
+// prevent new sequences from completely ruining modded versions of the main menu
+// they'll still look bad for the new areas but at least the old areas won't move
+var sequenceAddedInUpdate = map[string]int{
+	"notifications":                    1,
+	"notifications_dull":               1,
+	"notifications_hover":              1,
+	"notifications_quit_hover":         1,
+	"quit_notifications_hover":         1,
+	"top_bar_right_notifications_glow": 1,
 }
 
 func main() {
@@ -684,6 +713,12 @@ func main() {
 
 	for sheetIndex, sequences := range sheetSequences {
 		sort.Slice(sequences, func(i, j int) bool {
+			ii := sequenceAddedInUpdate[sequences[i].name]
+			jj := sequenceAddedInUpdate[sequences[j].name]
+			if ii != jj {
+				return ii < jj
+			}
+
 			return sequences[i].name < sequences[j].name
 		})
 
